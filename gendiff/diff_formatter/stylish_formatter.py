@@ -1,56 +1,70 @@
+"""Stylish formatter module."""
 from collections import OrderedDict
 from typing import Final, Optional
 
 from gendiff.diff_dict import DiffDict
-
 from .diff_formatter import DiffFormatter
+
+DIFF_STATUS: Final = "status"
+DIFF_VALUE: Final = "value"
 
 INDENT: Final = "  "
 OFFSET: Final = 2
 
 
 class StylishFormatter(DiffFormatter):
-    formatted_diff_data: str = ""
+    """Create StylishFormatter."""
 
     def __init__(self, diff_data: DiffDict):
-        super().__init__(diff_data, "stylish")
+        """Create StylishFormatter.
 
-    @staticmethod
-    def __get_line(status, key, value, deep):
-        return f"{INDENT * (deep + 1)}{status} {key}: {value}"
+        Args:
+            diff_data: Diff data dict
+        """
+        super().__init__(diff_data, "stylish")
+        self.line_format = "$indent$status $node_key: $node_value"
 
     def format_diff_data(
         self,
         diff_data: Optional[DiffDict] = None,
         deep: int = 0,
     ) -> str:
+        """Get stylish formatted diff data.
+
+        Args:
+            diff_data: Diff data dict
+            deep: Dict data deep for iteration
+
+        Returns:
+            Formatted diff data.
+        """
         diff_data = self.diff_data if diff_data is None else diff_data
 
         output = ["{"]
 
-        for diff_item_key, diff_item_list in OrderedDict(
+        for item_key, item_list in OrderedDict(
             sorted(diff_data.items())
         ).items():
-            for diff_item_data in diff_item_list:
-                if isinstance(diff_item_data["value"], DiffDict):
+            for item_data in item_list:
+                if isinstance(item_data[DIFF_VALUE], DiffDict):
                     output.append(
-                        self.__get_line(
-                            diff_item_data["status"],
-                            diff_item_key,
+                        self._get_line(
+                            item_data[DIFF_STATUS],
+                            item_key,
                             self.format_diff_data(
-                                diff_item_data["value"],
+                                item_data[DIFF_VALUE],
                                 deep + OFFSET,
                             ),
                             deep,
                         ),
                     )
-                elif isinstance(diff_item_data["value"], dict):
+                elif isinstance(item_data[DIFF_VALUE], dict):
                     output.append(
-                        self.__get_line(
-                            diff_item_data["status"],
-                            diff_item_key,
-                            self.__format_dict_value(
-                                diff_item_data["value"],
+                        self._get_line(
+                            item_data[DIFF_STATUS],
+                            item_key,
+                            self._format_dict_value(
+                                item_data[DIFF_VALUE],
                                 deep + OFFSET,
                             ),
                             deep,
@@ -58,10 +72,10 @@ class StylishFormatter(DiffFormatter):
                     )
                 else:
                     output.append(
-                        self.__get_line(
-                            diff_item_data["status"],
-                            diff_item_key,
-                            diff_item_data["value"],
+                        self._get_line(
+                            item_data[DIFF_STATUS],
+                            item_key,
+                            str(item_data[DIFF_VALUE]),
                             deep,
                         ),
                     )
@@ -78,17 +92,17 @@ class StylishFormatter(DiffFormatter):
 
         return "\n".join(output)
 
-    def __format_dict_value(self, dict_value: dict, deep: int = 0) -> str:
+    def _format_dict_value(self, dict_value: dict, deep: int = 0) -> str:
         output = ["{"]
         for item_key, item_value in OrderedDict(
             sorted(dict_value.items())
         ).items():
             if isinstance(item_value, dict):
                 output.append(
-                    self.__get_line(
+                    self._get_line(
                         " ",
                         item_key,
-                        self.__format_dict_value(
+                        self._format_dict_value(
                             item_value,
                             deep + OFFSET,
                         ),
@@ -97,13 +111,16 @@ class StylishFormatter(DiffFormatter):
                 )
             else:
                 output.append(
-                    self.__get_line(
-                        " ",
-                        item_key,
-                        str(item_value),
-                        deep,
-                    ),
+                    self._get_line(" ", item_key, str(item_value), deep),
                 )
 
         output.append(INDENT * deep + "}")
         return "\n".join(output)
+
+    def _get_line(self, status, node_key, node_value, deep):
+        return (
+            self.line_format.replace("$indent", INDENT * (deep + 1))
+            .replace("$status", status)
+            .replace("$node_key", node_key)
+            .replace("$node_value", node_value)
+        )
