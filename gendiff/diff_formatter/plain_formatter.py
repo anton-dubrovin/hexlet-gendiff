@@ -79,7 +79,8 @@ class PlainFormatter(DiffFormatter):
 
         return output
 
-    def _if_complex(self, maybe_complex_value):
+    @staticmethod
+    def _if_complex(maybe_complex_value):
         if isinstance(maybe_complex_value, dict):
             return COMPLEX_VALUE
         return maybe_complex_value
