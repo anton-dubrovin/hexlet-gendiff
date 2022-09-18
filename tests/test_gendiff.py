@@ -14,6 +14,7 @@ FILE2_YML = "tests/fixtures/file2.yml"
 
 FILE_RESULT_STYLISH = "tests/fixtures/result_stylish"
 FILE_RESULT_PLAIN = "tests/fixtures/result_plain"
+FILE_RESULT_JSON = "tests/fixtures/result_json"
 
 extract_result = {
     "common": {
@@ -44,6 +45,8 @@ with open(FILE_RESULT_STYLISH) as file_data:
     result_stylish = file_data.read()
 with open(FILE_RESULT_PLAIN) as file_data:
     result_plain = file_data.read()
+with open(FILE_RESULT_JSON) as file_data:
+    result_json = file_data.read()
 
 
 @pytest.mark.parametrize(
@@ -53,6 +56,8 @@ with open(FILE_RESULT_PLAIN) as file_data:
         (generate_diff(FILE1_YML, FILE2_YML, STYLISH), result_stylish),
         (generate_diff(FILE1_JSON, FILE2_JSON, PLAIN), result_plain),
         (generate_diff(FILE1_YML, FILE2_YML, PLAIN), result_plain),
+        (generate_diff(FILE1_JSON, FILE2_JSON, JSON), result_json),
+        (generate_diff(FILE1_YML, FILE2_YML, JSON), result_json),
     ],
 )
 def test_generate_diff(input_data, expected):

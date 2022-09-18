@@ -44,25 +44,27 @@ class StylishFormatter(DiffFormatter):
 
         for item_key, item_list in sorted(diff_data.items()):
             for item_data in item_list:
-                if isinstance(item_data[DIFF_VALUE], DiffDict):
+                diff_status = item_data[DIFF_STATUS]
+                diff_value = item_data[DIFF_VALUE]
+                if isinstance(diff_value, DiffDict):
                     output.append(
                         self._get_line(
-                            item_data[DIFF_STATUS],
+                            diff_status,
                             item_key,
                             self.format_diff_data(
-                                item_data[DIFF_VALUE],
+                                diff_value,
                                 deep + OFFSET,
                             ),
                             deep,
                         ),
                     )
-                elif isinstance(item_data[DIFF_VALUE], dict):
+                elif isinstance(diff_value, dict):
                     output.append(
                         self._get_line(
-                            item_data[DIFF_STATUS],
+                            diff_status,
                             item_key,
                             self._format_dict_value(
-                                item_data[DIFF_VALUE],
+                                diff_value,
                                 deep + OFFSET,
                             ),
                             deep,
@@ -71,9 +73,9 @@ class StylishFormatter(DiffFormatter):
                 else:
                     output.append(
                         self._get_line(
-                            item_data[DIFF_STATUS],
+                            diff_status,
                             item_key,
-                            str(item_data[DIFF_VALUE]),
+                            str(diff_value),
                             deep,
                         ),
                     )
