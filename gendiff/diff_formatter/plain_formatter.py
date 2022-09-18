@@ -33,6 +33,7 @@ class PlainFormatter(DiffFormatter):
             .replace("'True'", "true")
             .replace("'False'", "false")
             .replace("'None'", "null")
+            .replace("'0'", "0")
             .replace(f"'{COMPLEX_VALUE}'", COMPLEX_VALUE)
         )
 
