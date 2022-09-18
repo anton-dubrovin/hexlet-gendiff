@@ -58,7 +58,11 @@ def find_diff(first_data: dict, second_data: dict) -> DiffDict:
     return diff_data
 
 
-def generate_diff(first_file: str, second_file: str, diff_format: str) -> str:
+def generate_diff(
+    first_file: str,
+    second_file: str,
+    diff_format: str = "stylish",
+) -> str:
     """Find differences and print them in following format.
 
     Args:
