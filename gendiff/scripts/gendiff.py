@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """Generate Diff module run script."""
 from gendiff.argparse_args import get_args
 from gendiff.gendiff import generate_diff
