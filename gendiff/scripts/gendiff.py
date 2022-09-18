@@ -7,7 +7,8 @@ from gendiff.gendiff import generate_diff
 def main():
     """Gendiff main function. Print gendiff app results."""
     args = get_args()
-    generate_diff(args.first_file, args.second_file, args.format)
+    diff_data = generate_diff(args.first_file, args.second_file, args.format)
+    print(diff_data)
 
 
 if __name__ == "__main__":

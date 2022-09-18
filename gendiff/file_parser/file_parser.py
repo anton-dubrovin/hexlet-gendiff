@@ -1,5 +1,6 @@
 """Interface for FileParser."""
 from abc import ABC, abstractmethod
+from pathlib import Path
 
 
 class FileParser(ABC):
@@ -11,7 +12,7 @@ class FileParser(ABC):
         Args:
             file_path: Path to file
         """
-        self.file_path = file_path
+        self.file_path = Path(file_path).resolve()
         self.file_data = {}
 
     @abstractmethod

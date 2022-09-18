@@ -58,20 +58,21 @@ def find_diff(first_data: dict, second_data: dict) -> DiffDict:
     return diff_data
 
 
-def generate_diff(first_file: str, second_file: str, diff_format: str) -> None:
+def generate_diff(first_file: str, second_file: str, diff_format: str) -> str:
     """Find differences and print them in following format.
 
     Args:
         first_file: Path to first file
         second_file: Path to second file
         diff_format: Format - plain, stylish or json
+
+    Returns:
+        Formatted diff data.
     """
-    print(
-        get_formatted_diff(
-            find_diff(
-                parse_file_data(first_file),
-                parse_file_data(second_file),
-            ),
-            diff_format,
+    return get_formatted_diff(
+        find_diff(
+            parse_file_data(first_file),
+            parse_file_data(second_file),
         ),
+        diff_format,
     )

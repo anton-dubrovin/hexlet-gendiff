@@ -1,8 +1,8 @@
 """Stylish formatter module."""
-from collections import OrderedDict
 from typing import Final, Optional
 
 from gendiff.diff_dict import DiffDict
+
 from .diff_formatter import DiffFormatter
 
 DIFF_STATUS: Final = "status"
@@ -13,7 +13,7 @@ OFFSET: Final = 2
 
 
 class StylishFormatter(DiffFormatter):
-    """Create StylishFormatter."""
+    """Create StylishFormatter definition."""
 
     def __init__(self, diff_data: DiffDict):
         """Create StylishFormatter.
@@ -42,9 +42,7 @@ class StylishFormatter(DiffFormatter):
 
         output = ["{"]
 
-        for item_key, item_list in OrderedDict(
-            sorted(diff_data.items())
-        ).items():
+        for item_key, item_list in sorted(diff_data.items()):
             for item_data in item_list:
                 if isinstance(item_data[DIFF_VALUE], DiffDict):
                     output.append(
@@ -80,7 +78,7 @@ class StylishFormatter(DiffFormatter):
                         ),
                     )
 
-        output.append(INDENT * deep + "}")
+        output.append(f"{INDENT * deep}}}")
 
         if deep == 0:
             return (
@@ -94,9 +92,8 @@ class StylishFormatter(DiffFormatter):
 
     def _format_dict_value(self, dict_value: dict, deep: int = 0) -> str:
         output = ["{"]
-        for item_key, item_value in OrderedDict(
-            sorted(dict_value.items())
-        ).items():
+
+        for item_key, item_value in sorted(dict_value.items()):
             if isinstance(item_value, dict):
                 output.append(
                     self._get_line(
@@ -118,6 +115,7 @@ class StylishFormatter(DiffFormatter):
         return "\n".join(output)
 
     def _get_line(self, status, node_key, node_value, deep):
+
         return (
             self.line_format.replace("$indent", INDENT * (deep + 1))
             .replace("$status", status)
